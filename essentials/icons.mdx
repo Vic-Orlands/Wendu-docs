@@ -1,0 +1,56 @@
+---
+title: "Icons"
+description: "All icons are imported from lucide-react. This is because Next.js supports Lucide React icon library and more importantly, it is lighter than react-icons."
+icon: "palette"
+---
+
+<Frame>
+  <img style={{ borderRadius: "0.5rem" }} src="/images/essentials/icons.png" />
+</Frame>
+
+## Using Icons
+
+You can browse and import icons from the Lucide library: [https://lucide.dev/icons/](https://lucide.dev/icons/)
+
+```jsx
+import { Heart, Star, Zap } from "lucide-react";
+
+// Use in your components
+<Heart color="#ff0000" size={24} />;
+```
+
+## Icon Implementation
+
+### Basic Usage
+
+The simplest way to add icons is by using the icon component with the name prop:
+
+```jsx
+<Icon name="star" />
+```
+
+### Using with Buttons
+
+Combine icons with buttons for a more intuitive interface:
+
+```jsx
+<Button>
+  <Icon name="download" className="mr-2" />
+  Download Assets
+</Button>
+```
+
+### Customizing Icons
+
+You can customize icons with various props:
+
+```jsx
+// Change size
+<Icon name="settings" size={32} />
+
+// Change color
+<Icon name="alert-circle" color="#ff0000" />
+
+// Stroke width
+<Icon name="check" strokeWidth={3} />
+```

@@ -1,0 +1,299 @@
+---
+title: "Sidebar"
+description: "The `Sidebar` component provides a responsive, collapsible sidebar navigation system with tabbed sections for a cloud management dashboard. This document explains its structure, configuration, and functionality."
+icon: "bars"
+---
+
+<Frame caption="Wendu Sidebar">
+  <img src="/images/essentials/sidebar.png" alt="Wendu Sidebar" />
+</Frame>
+
+## Table of Contents
+
+- [Structure Overview](#structure-overview)
+- [Key Features](#key-features)
+- [Component Breakdown](#component-breakdown)
+- [Navigation Items Configuration](#navigation-items-configuration)
+- [Theme Handling](#theme-handling)
+- [Responsive Behavior](#responsive-behavior)
+- [User Authentication](#user-authentication)
+- [Usage Example](#usage-example)
+
+## Structure Overview
+
+The sidebar combines several UI patterns:
+
+1. **Collapsible Main Sidebar** - Can be toggled between expanded and collapsed states
+2. **Tabbed Navigation** - Switches between "Cost" and "Security" management sections
+3. **Nested Menu Items** - Supports groups, collapsible sections, and direct links
+4. **Footer Controls** - Theme selector, cloud connectors, and user settings
+
+## Key Features
+
+- **Responsive Design**: Adapts between desktop and mobile views
+- **Theming Support**: Light, dark, and system theme options
+- **Icon and Full Width Modes**: Collapses to icon-only view to save space
+- **User Authentication**: Displays user email and logout options
+- **Context-Aware Highlighting**: Highlights active navigation items based on current URL
+
+## Component Breakdown
+
+### Header Section
+
+Contains the logo with different versions for expanded/collapsed states:
+
+```jsx
+<SidebarHeader className="mt-12">
+  {/* full logo */}
+  <div className="px-2 py-4 group-data-[collapsible=icon]:hidden">
+    {theme == "light" || (theme == "system" && systemTheme == "light") ? (
+      <Logo />
+    ) : (
+      <LogoDarkmode />
+    )}
+  </div>
+  {/* logo icons */}
+  <div className="hidden px-2 py-4 group-data-[collapsible=icon]:block">
+    {theme == "light" || (theme == "system" && systemTheme == "light") ? (
+      <LightIcon />
+    ) : (
+      <DarkIcon />
+    )}
+  </div>
+</SidebarHeader>
+```
+
+### Content Section with Tabs
+
+The main content section uses tabs to toggle between Cost and Security management:
+
+```jsx
+<SidebarContent>
+  <Tabs value={activeTab} onValueChange={setActiveTab}>
+    {state != "collapsed" || isMobile ? (
+      <TabsList className="grid w-full grid-cols-2">
+        <TabsTrigger value="cost">Cost</TabsTrigger>
+        <TabsTrigger value="security">Security</TabsTrigger>
+      </TabsList>
+    ) : (
+      // Compact toggle switch for collapsed state
+      <div className="flex flex-col items-center space-y-2">
+        <Label htmlFor="airplane-mode" className="text-[10px]">
+          {activeTab === "cost" ? "Cost" : "Security"}
+        </Label>
+        <Switch
+          id="airplane-mode"
+          checked={activeTab === "security"}
+          onCheckedChange={(checked) =>
+            setActiveTab(checked ? "security" : "cost")
+          }
+          className="w-6 h-3 [&>span]:h-2 [&>span]:w-2 [&>span]:data-[state=checked]:translate-x-3"
+        />
+      </div>
+    )}
+    <TabsContent value="cost">{/* Cost management items */}</TabsContent>
+    <TabsContent value="security">
+      {/* Security management items */}
+    </TabsContent>
+  </Tabs>
+</SidebarContent>
+```
+
+### Footer Section
+
+Contains theme control, cloud connectors, and user settings:
+
+```jsx
+<SidebarFooter>
+  <SidebarMenu>
+    {footerItems.map((item) => (
+      <div key={item.title}>{renderItem(item)}</div>
+    ))}
+    <SidebarMenuItem>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <SidebarMenuButton className="py-6">
+            <Settings />
+            <div className="flex flex-col">
+              <span className="text-sm font-medium">Settings</span>
+              <span className="text-xs text-muted-foreground">
+                {userEmail || "..."}
+              </span>
+            </div>
+          </SidebarMenuButton>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent
+          align="end"
+          className="w-[--radix-popper-anchor-width]"
+        >
+          <Link href={"/users"}>
+            <DropdownMenuItem>
+              <Users className="mr-2 h-4 w-4" />
+              <span>Users</span>
+            </DropdownMenuItem>
+          </Link>
+          <DropdownMenuItem
+            onClick={() => setShowLogoutModal(true)}
+            className="text-destructive"
+          >
+            <LucideLogOut className="mr-2 h-4 w-4" />
+            <span>Log out</span>
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </SidebarMenuItem>
+  </SidebarMenu>
+</SidebarFooter>
+```
+
+## Navigation Items Configuration
+
+The sidebar navigation is driven by structured data objects that define the menu hierarchy:
+
+```jsx
+type SidebarItem = {
+  title: string,
+  type: "group" | "collapsible" | "item" | "popover",
+  icon?: React.ComponentType<{ className?: string }>,
+  url?: string,
+  items?: SidebarItem[],
+  badge?: number,
+};
+```
+
+Different item types are supported:
+
+- `group`: A labeled group of items
+- `collapsible`: A dropdown or expandable menu section
+- `item`: A direct navigation link
+- `popover`: A popover menu (used for theme selection)
+
+### Example Navigation Structure
+
+```jsx
+const costManagementItems: SidebarItem[] = [
+  {
+    title: "Cost Visibility",
+    icon: CreditCard,
+    type: "collapsible",
+    url: "/cost-visibility",
+    items: [
+      {
+        title: "Cloud Cost",
+        url: "/cost-visibility/cloud-cost",
+        icon: Wallet,
+        type: "item",
+      },
+      {
+        title: "Daily Cost",
+        url: "/cost-visibility/daily-cost",
+        icon: CircleDollarSign,
+        type: "item",
+      },
+    ],
+  },
+  // Additional items...
+];
+```
+
+## Theme Handling
+
+The sidebar supports light, dark, and system themes using the `next-themes` package:
+
+```jsx
+const { theme, systemTheme, setTheme } = useTheme();
+
+// Theme toggle in the footer
+<DropdownMenu>
+  <DropdownMenuTrigger asChild>
+    <SidebarMenuButton>
+      <Sun className="h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+      <Moon className="absolute h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+      <span>{capitalizeTitle(theme as string)} theme</span>
+    </SidebarMenuButton>
+  </DropdownMenuTrigger>
+  <DropdownMenuContent>
+    {/* Theme options */}
+  </DropdownMenuContent>
+</DropdownMenu>
+```
+
+## Responsive Behavior
+
+The sidebar adapts to different screen sizes:
+
+1. **Desktop Expanded**: Full sidebar with text labels
+2. **Desktop Collapsed**: Icon-only sidebar with tooltips/popovers
+3. **Mobile**: Full-width sidebar with a collapsible toggle
+
+This is handled through the `useSidebar` hook:
+
+```jsx
+const { state, isMobile } = useSidebar();
+
+// Example of responsive handling
+{
+  state !== "collapsed" && <span>{item.title}</span>;
+}
+```
+
+## User Authentication
+
+The sidebar fetches and displays the current user's email and provides a logout option:
+
+```jsx
+useEffect(() => {
+  const fetchUserEmail = async () => {
+    try {
+      const { username, userId, signInDetails } = await getCurrentUser();
+      setUserEmail(signInDetails?.loginId || "Unknown User");
+    } catch (error) {
+      console.error("Failed to fetch user email:", error);
+      setUserEmail("Error fetching email");
+    }
+  };
+
+  fetchUserEmail();
+}, []);
+```
+
+The logout process includes a confirmation modal:
+
+```jsx
+const confirmLogout = () => {
+  AuthService.signOut();
+  router.replace("/sign-in");
+};
+```
+
+## Usage Example
+
+```jsx
+// In layout.tsx component
+import Sidebar from "@/components/sidebar/sidebar";
+
+export default function DashboardLayout({ children }) {
+  return (
+    <div className={styles.main}>
+      <SidebarProvider>
+        <Sidebar />
+        
+        <div className="relative w-full pb-12">
+          <MainContent isMobile={false}>
+            {children}
+            <Toaster />
+          </MainContent>
+        </div>
+      </SidebarProvider>
+    </div>
+  );
+}
+```
+
+## Key Components Used
+
+- **Sidebar Components**: Custom UI components for sidebar structure
+- **Lucide Icons**: For menu and action icons
+- **Radix UI**: For dropdowns, collapsibles, and other interactive elements
+- **Next.js Navigation**: For routing and pathname detection
+- **AWS Amplify**: For user authentication

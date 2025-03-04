@@ -1,0 +1,65 @@
+---
+title: "Connectors"
+description: "The AWS Connector allows you to connect your AWS accounts to the platform to retrieve and manage data"
+---
+
+<Note>
+  This guide works for all connectors. Only the API calls change, the rest
+  remains constant.
+</Note>
+
+## Overview
+
+<Frame caption="Wendu Navbar">
+  <img src="/images/connectors.png" alt="Wendu Navbar" />
+</Frame>
+
+The AWS Connector page provides functionality to:
+
+- View existing AWS connectors
+- Add new connectors
+- Delete existing connectors
+
+## Components
+
+### Connector List View
+
+The main page displays all configured AWS connectors in a table with the following information:
+
+- Connector ID
+- Connector Name
+- Provider Name
+- AWS Account ID
+- Connection Status
+- Action buttons for management
+
+### Adding a New Connector
+
+To add a new AWS connector:
+
+1. Click the "Add connector RoleARN" button
+2. Fill in the required fields:
+
+   - Connector Name: A unique identifier for this connection
+   - AWS External ID: The external ID for cross-account access
+   - AWS Role ARN: The Amazon Resource Name for the IAM role
+
+   <Frame caption="Wendu Navbar">
+     <img src="/images/add-connector.png" alt="Wendu Navbar" />
+   </Frame>
+
+### AWS CloudFormation Integration
+
+The platform provides a direct link to launch the AWS CloudFormation template that creates the necessary IAM roles with proper permissions:
+
+```bash
+https://console.aws.amazon.com/cloudformation/********
+```
+
+## API Integration
+
+The component uses the `AWSConnectorAPIHelper` service with the following methods:
+
+- `getRoleArnList()`: Retrieves all configured connectors
+- `createRoleArn(external_id, role_arn, name)`: Creates a new connector
+- `deleteRoleArn(name)`: Removes an existing connector

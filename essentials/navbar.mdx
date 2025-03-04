@@ -1,0 +1,298 @@
+---
+title: "Navbar"
+description: "The Navbar component is part of the `MainContent` layout and serves as the primary navigation interface for a cloud management dashboard. This document focuses on the Navbar implementation and its related functionality."
+icon: "map"
+---
+
+<Frame caption="Wendu Navbar">
+  <img src="/images/essentials/navbar.png" alt="Wendu Navbar" />
+</Frame>
+
+## Overview
+
+The Navbar component appears at the top of the `MainContent` container and provides:
+
+1. Cloud provider selection (AWS, Azure, Google)
+2. Connector selection dropdown
+3. Account ID display
+4. Date/DateRange pickers for filtering data
+
+## Component Integration
+
+The Navbar is embedded within the `MainContent` component and receives the `isMobile` prop to handle responsive behavior:
+
+```jsx
+<div className="sticky top-0 z-50 bg-background">
+  <Navbar isMobile={isMobile} setProvider={setProviderFunction} />
+  {/* Additional controls... */}
+</div>
+```
+
+## Key Props
+
+The Navbar component accepts two primary props:
+
+```jsx
+const Navbar: React.FC<{
+  isMobile: boolean,
+  setProvider: (provider: Provider) => void,
+}> = ({ isMobile, setProvider }) => {
+  // Implementation...
+};
+```
+
+- **isMobile**: Boolean flag to determine responsive layout
+- **setProvider**: Function to change the active cloud provider
+
+## Provider Selection
+
+The Navbar allows users to switch between different cloud providers (AWS, Azure, Google Cloud):
+
+```jsx
+const setProviderFunction = (provider: Provider) => {
+  const image =
+    provider === "aws"
+      ? AWSlogo
+      : provider === "azure"
+      ? Azurelogo
+      : Googlelogo;
+  setActiveImg(image);
+  setProvider(provider);
+  localStorage.setItem("provider", provider);
+};
+```
+
+The selected provider is:
+
+1. Visually indicated with the appropriate logo
+2. Stored in the layout context
+3. Persisted in localStorage for session continuity
+
+## Connector Selection
+
+After choosing a provider, users can select a specific connector:
+
+```jsx
+<Select onValueChange={handleConnectorChange} value={connectorId}>
+  <SelectTrigger className="w-[200px]">
+    <SelectValue placeholder="Select Connector" />
+  </SelectTrigger>
+  <SelectContent>
+    {connectorList.map((connector) => (
+      <SelectItem key={connector} value={connector}>
+        {connector}
+      </SelectItem>
+    ))}
+  </SelectContent>
+</Select>
+```
+
+This dropdown:
+
+- Displays available connectors for the selected provider
+- Triggers API calls to fetch account information when changed
+- Updates the context with the selected connector
+
+## Account ID Display
+
+The Navbar displays the Account ID associated with the selected connector:
+
+```jsx
+{(accountList as AccountItem[])
+  .filter((accountId) => accountId.connector === connectorId)
+  .map((instanceId, i) => (
+    <div
+      key={`${instanceId}+${i}`}
+      className="border text-secondary-foreground flex items-center justify-center p-1 rounded-lg gap-1 px-2"
+    >
+      Account ID
+      <span className="bg-secondary text-secondary-foreground rounded-full p-1 px-2">
+        {instanceId.id}
+      </span>
+    </div>
+  ))}
+```
+
+This provides important context about which account is currently being viewed.
+
+## Date Selection
+
+The Navbar provides two types of date selectors, conditionally rendered based on context flags:
+
+### Single Date Selector
+
+```jsx
+{
+  showDatePicker && (
+    <Popover>
+      <PopoverTrigger asChild>
+        <Button
+          variant={"outline"}
+          className={cn(
+            "w-[240px] justify-start text-left font-normal",
+            !date && "text-muted-foreground"
+          )}
+        >
+          <CalendarIcon />
+          {date ? format(date, "PPP") : <span>Pick a date</span>}
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent className="w-auto p-0" align="start">
+        <Calendar
+          mode="single"
+          selected={date}
+          onSelect={(e: any) => {
+            setDateString(format(e, "yyyy-MM-dd"));
+            setDate(e);
+          }}
+          initialFocus
+        />
+      </PopoverContent>
+    </Popover>
+  );
+}
+```
+
+### Date Range Selector
+
+```jsx
+{
+  showDateRangePicker && (
+    <Popover>
+      <PopoverTrigger asChild>
+        <Button
+          id="date"
+          variant={"outline"}
+          className={cn(
+            "w-[300px] justify-start text-left font-normal",
+            !dateRange && "text-muted-foreground"
+          )}
+        >
+          <CalendarIcon className="mr-2 h-4 w-4" />
+          {dateRange?.from ? (
+            dateRange.to ? (
+              <>
+                {format(dateRange.from, "LLL dd, y")} -{" "}
+                {format(dateRange.to, "LLL dd, y")}
+              </>
+            ) : (
+              format(dateRange.from, "LLL dd, y")
+            )
+          ) : (
+            <span>Pick a date range</span>
+          )}
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent className="w-auto p-0" align="start">
+        <Calendar
+          initialFocus
+          mode="range"
+          defaultMonth={dateRange?.from}
+          selected={dateRange}
+          onSelect={handleDateRangeChange}
+          numberOfMonths={2}
+        />
+      </PopoverContent>
+    </Popover>
+  );
+}
+```
+
+## Data Fetching
+
+The Navbar triggers data fetching operations when the provider changes:
+
+```jsx
+useEffect(() => {
+  const getConnectors = async () => {
+    let cloudConnectors: any = {};
+
+    try {
+      setLoading(true);
+      if (provider == "aws") {
+        cloudConnectors = await AWSConectorAPIHelper.getRoleArnList();
+      } else if (provider == "azure") {
+        cloudConnectors = await AzureConnector.getRoleArnList();
+      }
+
+      let connectors = cloudConnectors.data.body.map(
+        (connector: { stringValue: string }[]) => connector[1].stringValue
+      );
+      setConnectorList(connectors);
+
+      if (connectors.length > 0) {
+        // set the connectorId to the first one in the array
+        setConnectorId(connectors[0]);
+
+        // for cost visibility pages
+        // getting account lists for only aws connectors
+        const accountList = cloudConnectors.data.body.map(
+          (element: { stringValue: string }[]) => {
+            return {
+              id: element[3].stringValue,
+              connector: element[1].stringValue,
+            };
+          }
+        );
+        setAccountList(accountList);
+      }
+    } catch (error) {
+      // Error handling
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  getConnectors();
+}, [provider]);
+```
+
+This effect:
+
+1. Fetches connector data based on the selected provider
+2. Updates the available connectors list
+3. Sets default selections
+4. Extracts account information
+
+## Dependencies
+
+The Navbar component relies on several dependencies:
+
+- **Context API**: Utilizes `useLayout` hook for shared state
+- **API Helpers**: `AWSConectorAPIHelper` and `AzureConnector` for data fetching
+- **UI Components**: Leverages shadcn/ui components like Button, Select, Popover
+- **Date Utilities**: Uses date-fns for date formatting
+
+## Loading State
+
+During data fetching operations, a loading indicator is displayed:
+
+```jsx
+{
+  loading && <LoadingState />;
+}
+```
+
+This provides visual feedback to users during API operations.
+
+## Integration with Layout Context
+
+The Navbar heavily integrates with the layout context to share state across the application:
+
+```jsx
+const {
+  provider,
+  dateRange,
+  connectorId,
+  setProvider,
+  setAccountId,
+  setDateRange,
+  setDateString,
+  setConnectorId,
+  showDatePicker,
+  showDateRangePicker,
+  showConnectorDropdown,
+} = useLayout();
+```
+
+This context-based approach ensures consistent state throughout the application.

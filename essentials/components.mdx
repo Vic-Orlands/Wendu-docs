@@ -1,0 +1,63 @@
+---
+title: "Components"
+icon: "puzzle-piece"
+description: "Learn how to use and add shadcn/ui components in the project."
+---
+
+[shadcn/ui](https://ui.shadcn.com/) provides a collection of high-quality, accessible UI components that is compatible with Next.js and Tailwind CSS. This guide explains how to use these components, install new ones, and customize them.
+
+<Note>
+  Each shadcn/ui component is imported from the `@/components/ui/` directory and
+  follows a standard structure.
+</Note>
+
+### Example: Tabs Component
+
+The Tabs component is set of layered sections of page contents (also known as tab panels) that are displayed one at a time.
+
+#### 📌 Preview
+
+<Frame caption="Tabs component example">
+  <img
+    className="block dark:hidden"
+    src="/images/tabs-exmaple-light.png"
+    alt="Tabs Light"
+  />
+  <img
+    className="hidden dark:block"
+    src="/images/tabs-exmaple-dark.png"
+    alt="Tabs Dark"
+  />
+</Frame>
+
+#### 🔥 Code Example
+
+```tsx
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+
+export default function TabsDemo() {
+  return (
+    <Tabs defaultValue="account" className="w-[400px]">
+      <TabsList>
+        <TabsTrigger value="account">Account</TabsTrigger>
+        <TabsTrigger value="password">Password</TabsTrigger>
+      </TabsList>
+      <TabsContent value="account">
+        Make changes to your account here.
+      </TabsContent>
+      <TabsContent value="password">Change your password here.</TabsContent>
+    </Tabs>
+  );
+}
+```
+
+## Installation
+
+This is installed and added to the project already. However, for clarity sake, shadcn/ui was added using the command:
+
+<CodeGroup>
+```bash npm
+npx shadcn@latest add tabs
+```
+
+</CodeGroup>

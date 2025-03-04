@@ -1,0 +1,167 @@
+---
+title: "Codebase Structure"
+description: "Overview of Wendu cloud security platform codebase organization"
+---
+
+#### Top-Level Structure
+
+We followed the standard Next.js `app` project structure with the main code residing in the `/src` directory.
+
+```bash
+/wendu
+├── /src                    # Main source code
+│   ├── /API                # API integrations and cloud connectors
+│   ├── /app                # Next.js app router and page components
+│   ├── /assets             # Static assets (e.g., logo, sign-in images)
+│   ├── /components         # Reusable UI components
+│   ├── /context            # Global context providers
+│   │   ├── ToastContainer.tsx # Toast notifications provider
+│   ├── /hooks              # Custom hooks
+│   ├── /lib                # Utility functions
+│   │   ├── utils.ts        # General helper functions
+│   ├── /services           # API services and authentication
+│   │   ├── auth-service.ts # Sign-up and login functions
+├── /public                 # Static assets
+├── /node_modules           # Dependencies
+├── package.json            # Project configuration
+└── ...                     # Other config files
+```
+
+#### API Directory
+
+```bash
+/src/API
+├── /configs             # AWS Configuration files for API handlers and cloud connectors
+├── awsAPI.ts            # AWS API integration
+├── awsConnectorAPIHelper.ts  # Helper functions for AWS connectors
+├── awsSchedularApiHandler.ts # AWS scheduler API handlers
+├── awsSecurity.ts       # AWS security-specific functionality
+├── azureConnectorHelper.ts   # Helper functions for Azure connectors
+├── azureData.ts         # Azure data retrieval and processing
+├── azureSecurityAPI.ts  # Azure security functionality
+├── inventoryHepler.ts   # Inventory management helpers
+├── multicloud.ts        # Multi-cloud integration utilities
+├── statisticAPIHelper.ts # Statistical analysis helpers
+├── userAPIHelper.ts     # User management API helpers
+└── UserService.ts       # User service functionality. Retreives user sessions
+```
+
+#### App Directory
+
+```bash
+/src/app
+├── /(auth)              # Authentication routes and components
+│   ├── /new-password-required  # Password reset flow
+│   ├── /sign-in         # Sign-in page component
+│   └── /sign-up         # Sign-up page component
+├── /cloud-advisor       # Cloud recommendations and insights
+├── /compliance          # Compliance monitoring features
+├── /connectors          # Cloud provider connection management
+├── /cost-visibility     # Cost optimization tools
+├── /external-exposure   # External exposure analysis
+├── /iam-exposure        # IAM permissions and security
+├── /idle-resources      # Unused resources identification
+├── /multicloud          # Multi-cloud management interface
+├── /recommendations     # Recommendation engine and UI
+├── /scheduler           # Task scheduling features
+├── /tag-visibility      # Resource tagging and management
+├── /users               # User management
+├── /well-architected-exposure  # Well-architected framework analysis
+└── /widgets             # Reusable UI widgets
+```
+
+#### Components Directory
+
+```bash
+/src/components
+├── /navbar         # Navigation bar components
+├── /sidebar        # Sidebar components
+├── /ui             # shadcn/ui components
+├── /datatable      # Table components
+├── Icons.tsx       # Icon components
+├── loadingState.tsx # Loading state UI
+├── MainContent.tsx # Main content layout
+├── theme-provider.tsx # Theme provider for dark, light, and systems mode
+├── logo.tsx        # Component contains all SVG Logos used in the application
+```
+
+#### Assets Directory
+
+```bash
+/src/assets
+├── /logo           # contains the logos of the three (3) connectors
+├── /sign_in        # contains all images used in the login and signup pages
+```
+
+#### Hooks Directory
+
+```bash
+├── /hooks              # Custom hooks
+│   ├── use-toast.ts    # Hook for toast notifications
+│   ├── use-mobile.ts   # Hook for media queries
+```
+
+<Info>Almost all type checks are separated and add to `types.tsx` or `types.ts` file. Adhere and continue with this practice. This makes it simpler and neater to keep the types in a single file and export where needed. In summary, all files with type checks are kept in the same directory or folder of the parent file</ Info>
+
+#### Key Technical Components
+
+<CardGroup cols={2}>
+  <Card title="Cloud Connectors" icon="cloud">
+    The API directory contains connector implementations for AWS, Azure, and
+    potentially other cloud providers(We haven't added GCP connectors yet).
+  </Card>
+  <Card title="Authentication" icon="lock">
+    Handled in the `/(auth)` directory with dedicated routes for sign-in,
+    sign-up, and password management.
+  </Card>
+  <Card title="Multi-cloud Support" icon="server">
+    Implemented through the `multicloud.ts` file and corresponding UI in the
+    `/multicloud` directory.
+  </Card>
+  <Card title="Security Analysis" icon="shield">
+    Various security-focused modules including IAM exposure, external exposure,
+    and well-architected exposure.
+  </Card>
+</CardGroup>
+
+#### Technical Implementation
+
+<Tabs>
+  <Tab title="TypeScript">
+    All files use the `.ts` or `.tsx` extension for type safety and better
+    developer experience.\n\n Note: Try as much as possible to avoid using the `any` primitive in any type checking.
+  </Tab>
+  <Tab title="Next.js">
+    The app uses the modern Next.js app router for routing and server
+    components.
+  </Tab>
+  <Tab title="UI">
+    Built with shadcn/ui component library and Tailwind CSS for styling
+    throughout the application.
+  </Tab>
+  <Tab title="Git/GitHub branch">
+    Avoid making any changes to the main branch. Switch to a new branch and make a PR to merge to the main branch. Each PR requires review from multiple collaborators for better collaboration.
+
+    For commit messages, use concise and descriptive commits to describe what changes were made.
+
+  </Tab>
+  <Tab title="Commit Message Format">
+    A good commit message should follow this format:
+
+    ```bash
+    feat: Add Chart data using Recharts
+    fix: Fix loading spinner for login form
+    chore: Update dependencies and clean up unused files
+    docs: Update README with new API usage examples
+    ```
+
+    - Use `feat:` for new features.
+    - Use `fix:` for bug fixes.
+    - Use `chore:` for maintenance and dependencies.
+    - Use `docs:` for documentation updates.
+
+  </Tab>
+  <Tab title="CI/CD">
+    GitHub Actions are employed for continuous integration and deployment pipelines.
+  </Tab>
+</Tabs>

@@ -1,0 +1,102 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "theme": "maple",
+  "name": "Starter Kit",
+  "colors": {
+    "primary": "#0D9373",
+    "light": "#E3F2FD",
+    "dark": "#0D9373"
+  },
+  "favicon": "/favicon.svg",
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Documentation",
+        "groups": [
+          {
+            "group": "Get Started",
+            "pages": [
+              "introduction",
+              "quickstart",
+              {
+                "group": "Development",
+                "pages": [
+                  "development/introduction",
+                  "development/pages",
+                  "development/widgets",
+                  "development/connectors",
+                  "development/best-practices"
+                ]
+              }
+            ]
+          },
+          {
+            "group": "UI Components",
+            "pages": [
+              "essentials/icons",
+              "essentials/navbar",
+              "essentials/sidebar",
+              "essentials/components",
+              "essentials/authentication"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "API Reference",
+        "groups": [
+          {
+            "group": "API Documentation",
+            "pages": ["api-reference/introduction"]
+          },
+          {
+            "group": "Endpoint Examples",
+            "pages": [
+              "api-reference/endpoint/get",
+              "api-reference/endpoint/create",
+              "api-reference/endpoint/delete"
+            ]
+          }
+        ]
+      }
+    ],
+    "global": {
+      "anchors": [
+        {
+          "anchor": "Website",
+          "href": "https://wendu.io/",
+          "icon": "book-open-cover"
+        },
+        {
+          "anchor": "Blog",
+          "href": "https://wendu.io/blog/",
+          "icon": "newspaper"
+        }
+      ]
+    }
+  },
+  "logo": {
+    "light": "/logo/light.svg",
+    "dark": "/logo/dark.svg"
+  },
+  "navbar": {
+    "links": [
+      {
+        "label": "Support",
+        "href": "mailto:contact@cloudplexo.com"
+      }
+    ],
+    "primary": {
+      "type": "button",
+      "label": "Dashboard",
+      "href": "https://app.wendu.io/"
+    }
+  },
+  "footer": {
+    "socials": {
+      "facebook": "https://web.facebook.com/CloudplexoCMP",
+      "instagram": "https://www.instagram.com/cloudplexo/",
+      "linkedin": "https://www.linkedin.com/company/cloudplexo/"
+    }
+  }
+}

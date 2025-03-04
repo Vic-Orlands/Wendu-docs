@@ -1,0 +1,33 @@
+### Connecting Your First Cloud Account
+
+<Steps>
+  <Step title="Create an account">
+    Sign up for a Wendu account if you haven't already. Navigate to the sign-up page or use the CLI.
+  </Step>
+  <Step title="Set up cloud connectors">
+    Go to the Connectors section and select your cloud provider (AWS, Azure, or GCP).
+  </Step>
+  <Step title="Configure permissions">
+    Follow the guided process to set up the required IAM roles or service principals with appropriate permissions.
+    ```json
+    // Example AWS IAM policy
+    {
+      "Version": "2012-10-17",
+      "Statement": [
+        {
+          "Effect": "Allow",
+          "Action": [
+            "ec2:DescribeInstances",
+            "s3:ListAllMyBuckets",
+            "cloudwatch:GetMetricData"
+          ],
+          "Resource": "*"
+        }
+      ]
+    }
+    ```
+  </Step>
+  <Step title="Start monitoring">
+    Once connected, Wendu will begin analyzing your cloud environment for security risks, cost optimization opportunities, and compliance issues.
+  </Step>
+</Steps>
