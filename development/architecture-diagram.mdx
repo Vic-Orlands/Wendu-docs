@@ -1,0 +1,163 @@
+---
+title: "Architecture Diagram"
+description: "Below are architectural diagrams to illustrate and visualize in a UML-like format, the component structure, data flow, and interactions between different parts of the Wendu application."
+---
+
+### Full Architecture Diagram
+```txt
+                           +------------------------+
+                           |       Frontend         |
+                           | (Next.js + TypeScript) |
+                           +------------------------+
+                                    |
+                                    v
+                   +---------------------------------+
+                   |          API Layer              |
+                   | (/src/API - Cloud Connectors)   |
+                   +---------------------------------+
+                  /      |             |           \
+                 v       v             v            v
+       +-------------+ +--------------+ +-----------------------+
+       |  AWS API    | |  Azure API   | | GCP(Not included yet) |
+       +-------------+ +--------------+ +-----------------------+
+                   \           |              /
+                    v          v             v
+                   +----------------------------------+
+                   |         Services Layer           |
+                   | (/src/services - Business Logic) |
+                   +----------------------------------+
+                        |                     |
+                        v                     v
+              +----------------+      +------------------+
+              | Authentication |      |  Data Processing |
+              +----------------+      +------------------+
+                        \                      /
+                         v                    v
+                   +----------------------------------+
+                   |    Global State Management       |
+                   |  (React Context API, Hooks)      |
+                   +----------------------------------+
+                                   |
+                                   v
+                        +------------------------+
+                        |   Assets & Storage     |
+                        | (/src/assets, /public) |
+                        +------------------------+
+```
+
+### Data Flow & Interaction
+1. **User Interaction**: Users interact with the UI components (/src/components).
+2. **API Calls**: The frontend calls the API services (/src/API).
+3. **Cloud Integration**: API services communicate with AWS, Azure, and other cloud platforms.
+4. **Data Processing**: Data is processed in the services layer (/src/services).
+5. **Global State**: State is managed using React Context API (/src/context).
+<Info> Local states are kept local for better optimization </Info>
+6. **Rendering & UI Updates**: The processed data is displayed on the frontend.
+
+### High-Level Structure
+```txt
++-------------------+
+|     Frontend      |
+|  (Next.js App)    |
++-------------------+
+          |
+          | (API Calls)
+          v
++-------------------+
+|     Backend       |
+|  (API Services)   |
++-------------------+
+          |
+          | (Cloud APIs)
+          v
++-------------------+
+|  Cloud Providers  |
+| (AWS, Azure, GCP) |
++-------------------+
+```
+
+### Frontend Structure
+```txt
++-------------------+
+|     Frontend      |
+|  (Next.js App)    |
++-------------------+
+| - /app            |  # Pages and routing
+| - /components     |  # Reusable UI components
+| - /hooks          |  # Custom hooks (e.g., useToast, useMobile)
+| - /context        |  # Global state management (e.g., ToastContainer)
+| - /lib            |  # Utility functions
+| - /services       |  # API services (e.g., auth-service.ts)
++-------------------+
+```
+
+### Backend Structure
+```txt
++-------------------+
+|     Backend       |
+|  (API Services)   |
++-------------------+
+| - /API            |  # Cloud connectors and API handlers
+|   - awsAPI.ts     |  # AWS API integration
+|   - azureData.ts  |  # Azure data retrieval
+|   - multicloud.ts |  # Multi-cloud utilities
+| - /services       |  # Authentication and user management
+|   - auth-service.ts| # Sign-up, login, and session management
++-------------------+
+```
+
+### Cloud Providers
+```txt
++-------------------+
+|  Cloud Providers  |
+| (AWS, Azure, GCP) |
++-------------------+
+| - AWS             |  # AWS SDK and APIs
+| - Azure           |  # Azure SDK and APIs
+| - GCP             |  # GCP SDK and APIs (future implementation)
++-------------------+
+```
+
+### Data Flow
+```txt
++-------------------+       +-------------------+       +-------------------+
+|     Frontend      |       |     Backend       |       |  Cloud Providers  |
+|  (Next.js App)    |       |  (API Services)   |       | (AWS, Azure, GCP) |
++-------------------+       +-------------------+       +-------------------+
+          |                           |                           |
+          | (User Interaction)        | (API Calls)               |
+          |-------------------------->|                           |
+          |                           | (Cloud API Calls)         |
+          |                           |-------------------------->|
+          |                           | (Data Retrieval)         |
+          |                           |<--------------------------|
+          | (Data Rendering)          |                           |
+          |<--------------------------|                           |
+```
+
+### Component Interactions
+
+```txt
++-------------------+       +-------------------+       +-------------------+
+|     Frontend      |       |     Backend       |       |  Cloud Providers  |
+|  (Next.js App)    |       |  (API Services)   |       | (AWS, Azure, GCP) |
++-------------------+       +-------------------+       +-------------------+
+          |                           |                           |
+          | (User Authentication)     |                           |
+          |-------------------------->|                           |
+          |                           | (Cloud Authentication)    |
+          |                           |-------------------------->|
+          |                           | (Session Management)      |
+          |                           |<--------------------------|
+          | (Session Data)            |                           |
+          |<--------------------------|                           |
+          |                           |                           |
+          | (Cloud Data Requests)     |                           |
+          |-------------------------->|                           |
+          |                           | (Cloud API Calls)         |
+          |                           |-------------------------->|
+          |                           | (Data Retrieval)          |
+          |                           |<--------------------------|
+          | (Data Rendering)          |                           |
+          |<--------------------------|                           |
+```

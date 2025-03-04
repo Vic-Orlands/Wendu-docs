@@ -8,10 +8,7 @@ description: "Wendu provides a collection of customizable widgets that help you 
 Select a widget to start curating and customizing your widget page. See image below:
 
 <Frame caption="Wendu Dashboard Widgets">
-  <img
-    src="/images/widget/widgets.png"
-    alt="Wendu Dashboard Widgets"
-  />
+  <img src="/images/widget/widgets.png" alt="Wendu Dashboard Widgets" />
 </Frame>
 
 ### Available Widgets
@@ -93,11 +90,8 @@ Wendu allows you to create personalized dashboard layouts by adding, removing, a
   Click the "Add Widget" dropdown button on the top right of the dashboard and
   select from the available widgets.
   <Frame>
-      <img
-        src="/images/widget/add-more-widget.png"
-        alt="Add more widget"
-      />
-    </Frame>
+    <img src="/images/widget/add-more-widget.png" alt="Add more widget" />
+  </Frame>
 </Step>
 
 <Step title="Edit Widgets">
@@ -112,3 +106,40 @@ Wendu allows you to create personalized dashboard layouts by adding, removing, a
     </Frame>
 </Step>
 </Steps>
+
+## Code Structure
+
+### State Management
+
+The widget dashboard uses React's `useReducer` hook for centralized state management with the following key components:
+
+- **Reducer Function**: Processes all state updates through typed actions
+- **Initial State**: Defines empty arrays and default values for all dashboard metrics
+- **Widget Options**: Predefined list of available widgets with provider-specific filtering
+
+```typescript
+// Core state management
+const [state, dispatch] = useReducer(reducer, initialState);
+
+// Action dispatch example
+dispatch({ type: "SET_TABLE_DATA", payload: elements });
+```
+
+### Data Flow
+
+1. **Initialization**:
+
+   - On component mount, loads saved widgets from localStorage
+   - Fetches data based on selected connector, date and provider
+
+2. **Data Fetching**:
+
+   - Provider-specific API calls (AWS/Azure) triggered by connector changes
+   - Each data type has a dedicated fetch function (security, cost, resources)
+   - Response data is processed and formatted before updating state
+
+3. **Widget Management**:
+   - `handleEditWidget`: Toggles edit mode
+   - `handleSelectWidget`: Adds widgets to dashboard and persists to localStorage
+   - `handleRemoveWidget`: Removes widgets from dashboard and updates localStorage
+   - `isWidgetNameInArray`: Helper to check if widget is already added
