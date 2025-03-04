@@ -54,7 +54,8 @@
             "pages": [
               "api-reference/endpoint/get",
               "api-reference/endpoint/create",
-              "api-reference/endpoint/delete"
+              "api-reference/endpoint/user-service",
+              "api-reference/endpoint/token-and-authorization"
             ]
           }
         ]
