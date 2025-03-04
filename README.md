@@ -1,32 +1,38 @@
-# Mintlify Starter Kit
+# Wendu Documentation
 
-Click on `Use this template` to copy the Mintlify starter kit. The starter kit contains examples including
+Welcome to the official documentation for Wendu. This repository contains the source for our comprehensive documentation.
 
-- Guide pages
-- Navigation
-- Customizations
-- API Reference pages
-- Use of popular components
+## Local Development
 
-### Development
+To preview documentation changes locally, install the [Mintlify CLI](https://www.npmjs.com/package/mintlify):
 
-Install the [Mintlify CLI](https://www.npmjs.com/package/mintlify) to preview the documentation changes locally. To install, use the following command
-
-```
+```bash
 npm i -g mintlify
 ```
 
-Run the following command at the root of your documentation (where mint.json is)
+Start the local development server:
 
-```
+```bash
 mintlify dev
 ```
 
-### Publishing Changes
+## Documentation Structure
 
-Install our Github App to auto propagate changes from your repo to your deployment. Changes will be deployed to production automatically after pushing to the default branch. Find the link to install on your dashboard. 
+Our documentation includes:
+- Product guides
+- API references
+- Integration tutorials
+- Component examples
 
-#### Troubleshooting
+## Deployment
 
-- Mintlify dev isn't running - Run `mintlify install` it'll re-install dependencies.
-- Page loads as a 404 - Make sure you are running in a folder with `mint.json`
+Changes are automatically deployed when merged to the main branch through our GitHub integration.
+
+### Common Issues
+
+If you encounter problems:
+- Run `mintlify install` to refresh dependencies
+- Ensure you're in the directory containing `mint.json`
+- Check that all links and references are valid
+
+For additional support, please open an issue in the repository.
