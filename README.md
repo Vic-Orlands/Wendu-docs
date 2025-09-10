@@ -1,6 +1,6 @@
 # Wendu Documentation
 
-Welcome to the official documentation for Wendu. This repository contains the source for our comprehensive documentation.
+Welcome to the official documentation for Wendu. This repository contains the source for our comprehensive documentation. View live site here [https://mezieiv.mintlify.app/introduction](https://mezieiv.mintlify.app/introduction)
 
 ## Local Development
 
